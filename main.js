@@ -1,13 +1,13 @@
 let dvd = document.getElementById('dvd');
 let interval_id;
-let x_incr = 1;
-let y_incr = 1;
+let x_incr = 2;
+let y_incr = 2;
 
 function init() {
   update_color();
   dvd.style.position = 'absolute';
   document.body.style.background = '#000000';
-  setInterval(frame, 2);
+  setInterval(frame, 5);
 }
 
 function handle_collision() {
@@ -19,11 +19,11 @@ function handle_collision() {
   let win_width = window.innerWidth;
 
   if (left <= 0 || left + dvd_width >= win_width) {
-    x_incr = ~x_incr + 1;
+    x_incr = ~x_incr + 2;
     update_color();
   }
   if (top <= 0 || top + dvd_height >= win_height) {
-    y_incr = ~y_incr + 1;
+    y_incr = ~y_incr + 2;
     update_color();
   }
 }
