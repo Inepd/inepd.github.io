@@ -4,9 +4,15 @@ let x_incr = 1;
 let y_incr = 1;
 
 function init() {
+  update_color();
   dvd.style.position = 'absolute';
-  document.body.style.background = '#000000';
+  document.body.style.background = '#4d4d4d';
   setInterval(frame, 5);
+}
+
+function update_color() {
+  let color = Math.round((Math.random() * 100));
+  dvd.style.fill = `hsl(${color},100%,50%)`;
 }
 
 function handle_collision() {
@@ -19,9 +25,11 @@ function handle_collision() {
 
   if (left <= 0 || left + dvd_width >= win_width) {
     x_incr = ~x_incr + 1;
+    update_color();
   }
   if (top <= 0 || top + dvd_height >= win_height) {
     y_incr = ~y_incr + 1;
+    update_color();
   }
 }
 
