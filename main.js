@@ -6,13 +6,8 @@ let y_incr = 1;
 function init() {
   update_color();
   dvd.style.position = 'absolute';
-  document.body.style.background = '#4d4d4d';
+  document.body.style.background = '#000000';
   setInterval(frame, 5);
-}
-
-function update_color() {
-  let color = Math.round((Math.random() * 100));
-  dvd.style.fill = `hsl(${color},100%,50%)`;
 }
 
 function handle_collision() {
