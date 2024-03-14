@@ -1,42 +1,92 @@
-let dvd = document.getElementById('dvd');
-let interval_id;
-let x_incr = 1;
-let y_incr = 1;
 
-function init() {
-  update_color();
-  dvd.style.position = 'absolute';
-  document.body.style.background = '#000000';
-  setInterval(frame, 5);
-}
+/**
+ * Setup
+ */
+const debugEl = document.getElementById('debug'),
+			// Mapping of indexes to icons: start from banana in middle of initial position and then upwards
+			iconMap = ["inepd", "neon", "raven team", "bucky", "erm", "spunchbop", "nuxia", "fuze shield", "terra"],
+			// Width of the icons
+			icon_width = 79,	
+			// Height of one icon in the strip
+			icon_height = 79,	
+			// Number of icons in the strip
+			num_icons = 9,	
+			// Max-speed in ms for animating one icon down
+			time_per_icon = 100,
+			// Holds icon indexes
+			indexes = [0, 0, 0];
 
-function update_color() {
-  let color = Math.round((Math.random() * 100));
-  dvd.style.fill = `hsl(${color},100%,50%)`;
-}
 
-function handle_collision() {
-  let dvd_height = dvd.offsetHeight;
-  let dvd_width = dvd.offsetWidth;
-  let left = dvd.offsetLeft;
-  let top = dvd.offsetTop;
-  let win_height = window.innerHeight;
-  let win_width = window.innerWidth;
+/** 
+ * Roll one reel
+ */
+const roll = (reel, offset = 0) => {
+	// Minimum of 2 + the reel offset rounds
+	const delta = (offset + 2) * num_icons + Math.round(Math.random() * num_icons); 
+	
+	// Return promise so we can wait for all reels to finish
+	return new Promise((resolve, reject) => {
+		
+		const style = getComputedStyle(reel),
+					// Current background position
+					backgroundPositionY = parseFloat(style["background-position-y"]),
+					// Target background position
+					targetBackgroundPositionY = backgroundPositionY + delta * icon_height,
+					// Normalized background position, for reset
+					normTargetBackgroundPositionY = targetBackgroundPositionY%(num_icons * icon_height);
+		
+		// Delay animation with timeout, for some reason a delay in the animation property causes stutter
+		setTimeout(() => { 
+			// Set transition properties ==> https://cubic-bezier.com/#.41,-0.01,.63,1.09
+			reel.style.transition = `background-position-y ${(8 + 1 * delta) * time_per_icon}ms cubic-bezier(.41,-0.01,.63,1.09)`;
+			// Set background position
+			reel.style.backgroundPositionY = `${backgroundPositionY + delta * icon_height}px`;
+		}, offset * 150);
+			
+		// After animation
+		setTimeout(() => {
+			// Reset position, so that it doesn't get higher without limit
+			reel.style.transition = `none`;
+			reel.style.backgroundPositionY = `${normTargetBackgroundPositionY}px`;
+			// Resolve this promise
+			resolve(delta%num_icons);
+		}, (8 + 1 * delta) * time_per_icon + offset * 150);
+		
+	});
+};
 
-  if (left <= 0 || left + dvd_width >= win_width) {
-    x_incr = ~x_incr + 1;
-    update_color();
-  }
-  if (top <= 0 || top + dvd_height >= win_height) {
-    y_incr = ~y_incr + 1;
-    update_color();
-  }
-}
 
-function frame() {
-  handle_collision();
-  dvd.style.top = dvd.offsetTop + y_incr;
-  dvd.style.left = dvd.offsetLeft + x_incr;
-}
+/**
+ * Roll all reels, when promise resolves roll again
+ */
+function rollAll() {
+	
+	debugEl.textContent = 'rolling...';
+	
+	const reelsList = document.querySelectorAll('.slots > .reel');
+	
+	Promise
+		
+		// Activate each reel, must convert NodeList to Array for this with spread operator
+		.all( [...reelsList].map((reel, i) => roll(reel, i)) )	
+		
+		// When all reels done animating (all promises solve)
+		.then((deltas) => {
+			// add up indexes
+			deltas.forEach((delta, i) => indexes[i] = (indexes[i] + delta)%num_icons);
+			debugEl.textContent = indexes.map((i) => iconMap[i]).join(' - ');
+		
+			// Win conditions
+			if (indexes[0] == indexes[1] || indexes[1] == indexes[2]) {
+				const winCls = indexes[0] == indexes[2] ? "win2" : "win1";
+				document.querySelector(".slots").classList.add(winCls);
+				setTimeout(() => document.querySelector(".slots").classList.remove(winCls), 2000)
+			}
+		
+			// Again!
+			setTimeout(rollAll, 3000);
+		});
+};
 
-init();
+// Kickoff
+setTimeout(rollAll, 1000);
