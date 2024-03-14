@@ -1,6 +1,7 @@
 /**
  * Setup
  */
+
 const debugEl = document.getElementById('debug'),
 // Mapping of indexes to icons: start from banana in middle of initial position and then upwards
 iconMap = ["neon", "inepd", "terra", "fuze shield", "nuxia", "spunchbop", "erm", "bucky", "raven team"],
@@ -54,6 +55,10 @@ const roll = (reel, offset = 0) => {
   });
 };
 
+function play() {
+  var audio = new Audio('sounds/win.wav');
+  audio.play();
+}
 
 /**
  * Roll all reels, when promise resolves roll again
@@ -79,6 +84,7 @@ function rollAll() {
     if (indexes[0] == indexes[1] || indexes[1] == indexes[2]) {
       const winCls = indexes[0] == indexes[2] ? "win2" : "win1";
       document.querySelector(".slots").classList.add(winCls);
+      play();
       setTimeout(() => document.querySelector(".slots").classList.remove(winCls), 2000);
     }
 
