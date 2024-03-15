@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+<center>
+<h2>Trust me bro</h2>
+
+<button onclick="getLocation()">Click Me :)</button>
+
+<p id="demo"></p>
+
+<script>
+const x = document.getElementById("demo");
+
+function getLocation() {
+  try {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } catch {
+    x.innerHTML = err;
+  }
+}
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude + 
+  "<br>Longitude: " + position.coords.longitude;
+}
+</script>
+</center>
+</body>
+</html>
