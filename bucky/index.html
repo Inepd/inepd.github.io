@@ -1,10 +1,37 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat ipsum ea repellat sint numquam explicabo dolor accusantium minima minus veniam. Debitis quod voluptatum sint officiis iusto architecto id ipsam aut.
-</body>
+<html>
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Bucky Stats</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        fetch('https://gaviedata.pythonanywhere.com/buckyjson')
+            .then(res => res.text())
+            .then(data => {
+                console.log(data);
+                const obj = JSON.parse(data)
+                document.getElementById("kills").innerHTML = obj['bucky']
+            })
+    </script>
+  </head>
+  
+  <body>
+    <center> 
+        <div style="padding: 50px 100px">
+        
+            <p >inepd has ended</p>
+                <p id="kills"></p>
+                
+            <p>lives with the bucky</p>
+        
+        </div>
+    </center>
+
+    <div id='footer'>
+      <p>Data from <a href="https://tracker.gg/">tracker.gg</a>. This website costs me $5 a month to run</p>
+    </div>
+    
+
+  </body>
+  
 </html>
