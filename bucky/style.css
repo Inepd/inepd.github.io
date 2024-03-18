@@ -5,26 +5,25 @@
 body {
     background-color: black;
     color:white;
-    font-size: 64px;
+    font-size: 5vw;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 p {
-    margin: 50px;
+    margin: 45px;
 }
 
 #kills {
-    font-size: 5em;
+    font-size: 25vw;
     font-family: 'Segment', Arial, Helvetica, sans-serif;
     color:rgb(233, 0, 0);
     text-shadow: 1px 1px 10px #ff0000;
-    
+    text-align: center;
+    margin-left: 0;
 }
 
+
 #footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-size: 18px;
+    font-size: 1.5vw;
     text-align: center;
 }
